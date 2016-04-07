@@ -1,11 +1,13 @@
 swagger-rails
 =========
 
-Seamlessly adds a [Swagger](http://swagger.io/) to Rails-based API's! You create one or more swagger.json files to describe your API and swagger-rails will serve it up along with an embedded version of the [swagger-ui](https://github.com/swagger-api/swagger-ui). This means you can complement your API with a slick discovery UI to assist consumers with their integration efforts. Best of all, it requires minimal coding and maintenance, allowing you to focus on building an awesome API!
+Seamlessly adds a [Swagger](http://swagger.io/) to Rails-based API's! Use the provided Swagger DSL in your test/spec files to accurately describe and test API operations. Then, invoke the rake task to create one or more swagger.json files which will be served up along with an embedded version of the [swagger-ui](https://github.com/swagger-api/swagger-ui). This means you can complement your API with a slick discovery UI to assist consumers with their integration efforts. Best of all, it requires minimal coding and maintenance, allowing you to focus on building an awesome API!
 
 And that's not all ...
 
 Once you have a Web API that can describe itself in Swagger, you've opened the treasure chest of Swagger-based tools including a client generator that can be targeted to a wide range of popular platforms. See [swagger-codegen](https://github.com/swagger-api/swagger-codegen) for more details.
+
+_NOTE_: swagger-rails currently requires you to use rspec-rails for testing API's. Depending on utilization, it may be extended to support other test frameworks.
 
 ## Getting Started ##
 
@@ -21,9 +23,16 @@ Once you have a Web API that can describe itself in Swagger, you've opened the t
     rails g swagger_rails:install
     ```
 
-3. Spin up your app and navigate to '/api-docs'
+3. Create a spec file to describe and test an API operation
 
     _This is where your awesome API docs and playground can be viewed_
+    
+4. Generate swagger.json file(s)
+
+    ```ruby
+    rake swagger_rails:gen
+    
+
 
 4. Update the sample swagger.json (under config/swagger/v1)  to describe your API
 
