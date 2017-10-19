@@ -158,6 +158,17 @@ module Rswag
           end
         end
 
+        context "'formData' parameter" do
+          before do
+            api_metadata[:operation][:parameters] << { name: 'comment', in: :formData, type: 'string' }
+            allow(example).to receive(:comment).and_return('Some comment')
+          end
+
+          it 'returns the example value as a hash' do
+            expect(body).to eq({"comment" => "Some comment"})
+          end
+        end
+
         context "referenced 'body' parameter" do
           before do
             api_metadata[:operation][:parameters] << { '$ref' => '#/parameters/comment' }
@@ -169,6 +180,20 @@ module Rswag
 
           it 'returns the example value as a json string' do
             expect(body).to eq("{\"text\":\"Some comment\"}")
+          end
+        end
+
+        context "referenced 'formData' parameter" do
+          before do
+            api_metadata[:operation][:parameters] << { '$ref' => '#/parameters/comment' }
+            global_metadata[:parameters] = {
+              'comment' => { name: 'comment', in: :formData, type: 'string' }
+            }
+            allow(example).to receive(:comment).and_return('Some comment')
+          end
+
+          it 'returns the example value as a json string' do
+            expect(body).to eq({"comment" => "Some comment"})
           end
         end
       end
@@ -193,6 +218,33 @@ module Rswag
           end
         end
 
+        context "global definition for 'basic auth'" do
+          before do
+            global_metadata[:securityDefinitions] = { basic_auth: { type: :basic} }
+            allow(example).to receive(:'Authorization').and_return('Basic foobar')
+          end
+
+          context 'global requirement' do
+            before { global_metadata[:security] = [ { basic_auth: [] } ] }
+
+            it "includes a corresponding Authorization header" do
+              expect(headers).to match(
+                'Authorization' => 'Basic foobar'
+              )
+            end
+          end
+
+          context 'operation-specific requirement' do
+            before { api_metadata[:operation][:security] = [ { basic_auth: [] } ] }
+
+            it "includes a corresponding Authorization header" do
+              expect(headers).to match(
+                'Authorization' => 'Basic foobar'
+              )
+            end
+          end
+        end
+
         context 'consumes & produces' do
           before do
             api_metadata[:operation][:consumes] =  [ 'application/json', 'application/xml' ]
@@ -201,8 +253,8 @@ module Rswag
 
           it "includes corresponding 'Accept' & 'Content-Type' headers" do
             expect(headers).to match(
-              'ACCEPT' => 'application/json;application/xml',
-              'CONTENT_TYPE' => 'application/json;application/xml'
+              'Accept' => 'application/json;application/xml',
+              'Content-Type' => 'application/json;application/xml'
             )
           end
         end
@@ -217,8 +269,8 @@ module Rswag
 
           it "includes corresponding 'Accept' & 'Content-Type' headers" do
             expect(headers).to match(
-              'ACCEPT' => 'application/json;application/xml',
-              'CONTENT_TYPE' => 'application/json;application/xml'
+              'Accept' => 'application/json;application/xml',
+              'Content-Type' => 'application/json;application/xml'
             )
           end
         end

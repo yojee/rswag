@@ -39,12 +39,16 @@ RSpec.configure do |config|
           properties: {
             id: { type: 'integer' },
             title: { type: 'string' },
-            content: { type: 'string', 'x-nullable': true }
+            content: { type: 'string', 'x-nullable': true },
+            thumbnail: { type: 'string'}
           },
-          required: [ 'id', 'title', 'content' ]
+          required: [ 'id', 'title', 'content', 'thumbnail' ]
         }
       },
       securityDefinitions: {
+        basic_auth: {
+          type: :basic
+        },
         api_key: {
           type: :apiKey,
           name: 'api_key',
